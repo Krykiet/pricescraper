@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 # Models
 import models
+from models import Prices
 import test
 
 # Database
@@ -11,6 +12,7 @@ from database import engine
 from routers import scraper_router
 
 app = FastAPI()
+
 
 models.Base.metadata.create_all(bind=engine)
 

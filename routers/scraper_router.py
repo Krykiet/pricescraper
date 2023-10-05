@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 # models
-from models import Prices
+from models import Prices, RDN
 from pydantic import BaseModel, Field
 
 # scraper
@@ -40,6 +40,16 @@ class PricesDataRequest(BaseModel):
     list2_content: str = Field(min_length=1)
 
 
+class RDNRequest(BaseModel):
+    date_scraped: datetime
+    f1_price: list
+    f1_volume: list
+    f2_price: list
+    f2_volume: list
+    cont_price: list
+    cont_volume: list
+
+
 @router.get("/price")
 async def get_anything(db: db_dependency):
     return db.query(Prices).all()
@@ -59,6 +69,7 @@ async def post_something(db: db_dependency,
     list1, list2 = scraper.get_prices()
     # Date
     prices_data_model.date_scraped = datetime.now()
+    print(prices_data_model.date_scraped)
 
     prices_data_model.list1_content = str(list1)
 
@@ -67,6 +78,23 @@ async def post_something(db: db_dependency,
     db.add(prices_data_model)
     db.commit()
 
+
+@router.post("/rdn", status_code=status.HTTP_201_CREATED)
+async def get_rdn(db: db_dependency,
+                  rdn_request: RDNRequest):
+    rdn_data_model = RDN(**rdn_request.model_dump())
+
+    # Scrape data
+    # Add oop
+    # todo
+
+    # Pass data
+    rdn_data_model.date_scraped = datetime.now()
+    rdn_data_model.f1_price = f1_price
+    rdn_data_model.f1_volume = f1_volume
+
+
+    # Get scraped data
 
 @router.delete("/price/clear_base", status_code=status.HTTP_204_NO_CONTENT)
 async def clear_base(db: db_dependency):

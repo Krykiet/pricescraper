@@ -3,6 +3,11 @@ from bs4 import BeautifulSoup
 import numpy as np
 import re
 
+
+
+
+
+
 SCRAPER_MESSAGE = 'Scraped!'
 
 res = requests.get('https://tge.pl/energia-elektryczna-rdn')
