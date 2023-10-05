@@ -4,6 +4,7 @@ from typing import Annotated
 
 # App
 from fastapi import APIRouter, Depends, Path, HTTPException
+from sqlalchemy import text
 
 import models
 # db
@@ -70,6 +71,10 @@ async def post_something(db: db_dependency,
 @router.delete("/price/clear_base", status_code=status.HTTP_204_NO_CONTENT)
 async def clear_base(db: db_dependency):
     db.query(Prices).delete()
+
+    # Reset indexes
+    sequence_name = "prices_id_seq"
+    db.execute(text(f"ALTER SEQUENCE {sequence_name} RESTART WITH 1"))
     db.commit()
 
 
