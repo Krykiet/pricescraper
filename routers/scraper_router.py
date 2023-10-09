@@ -13,8 +13,8 @@ from starlette import status
 from database import SessionLocal
 # models
 from models import RDN
-# scraper
-from scraper import scraper
+# services
+from services import scraper
 
 router = APIRouter(prefix='/scraper', tags=['scraper'])
 
