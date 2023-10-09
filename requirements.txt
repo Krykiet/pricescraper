@@ -1,6 +1,6 @@
 beautifulsoup4==4.12.2
 fastapi==0.103.1
-numpy==1.21.6
+numpy==1.26.0
 pydantic==2.3.0
 Requests==2.31.0
 SQLAlchemy==2.0.20
