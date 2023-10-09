@@ -3,18 +3,17 @@ from datetime import datetime
 from typing import Annotated, Type
 
 # App
-from fastapi import APIRouter, Depends, Path, HTTPException
-from pydantic import BaseModel, Field
-from sqlalchemy import text
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from starlette import status
 
 # db
-from database import SessionLocal
+from app.database import SessionLocal
 # models
-from models import RDN
+from app.models.models import RDN
 # services
-from services import scraper
+from app.services import scraper
 
 router = APIRouter(prefix='/scraper', tags=['scraper'])
 
@@ -45,7 +44,8 @@ class RDNRequest(BaseModel):
 
 # Convert ARRAY(Float) to string
 def convert_properties_to_str(obj: Type[RDN]):
-    return {'date': str(obj.date_scraped),
+    return {'id': obj.id,
+            'date': str(obj.date_scraped),
             'f1_price': str(obj.f1_price),
             'f1_volume': str(obj.f1_volume),
             'f2_price': str(obj.f2_price),

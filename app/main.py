@@ -1,12 +1,11 @@
 from fastapi import FastAPI
 
-# Models
-import models
 # Database
-from database import engine
+from app.database import engine
+# Models
+from app.models import models
 # Routers
-from routers import scraper_router
-
+from app.routers import scraper_router
 
 app = FastAPI()
 

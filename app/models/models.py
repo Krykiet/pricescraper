@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, func
+from sqlalchemy import Column, Integer, Float, DateTime, func
 from sqlalchemy.dialects.postgresql import ARRAY
 
-from database import Base
+from app.database import Base
 
 
 class RDN(Base):

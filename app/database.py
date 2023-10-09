@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Config
-from config import get_config
+from app.config import get_config
 
 config = get_config()
 # SQLALCHEMY_DATABASE_URL_LOCAL = 'sqlite:///./todosapp.db'
