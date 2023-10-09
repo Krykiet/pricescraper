@@ -3,7 +3,6 @@ from fastapi import FastAPI
 # Models
 import models
 from models import Prices, RDN
-import test
 
 # Database
 from database import engine
