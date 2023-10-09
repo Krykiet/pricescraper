@@ -62,9 +62,8 @@ async def get_all_rdn(db: db_dependency):
 
 
 @router.post("/rdn", status_code=status.HTTP_201_CREATED)
-async def create_rdn(db: db_dependency,
-                     rdn_request: RDNRequest):
-    rdn_data_model = RDN(**rdn_request.model_dump())
+async def create_rdn(db: db_dependency):
+    rdn_data_model = RDN()
 
     # Pass data
     rdn_data_model.date_scraped = datetime.now()
