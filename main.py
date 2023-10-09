@@ -7,6 +7,7 @@ from database import engine
 # Routers
 from routers import scraper_router
 
+
 app = FastAPI()
 
 # Prices.__table__.drop(engine)
