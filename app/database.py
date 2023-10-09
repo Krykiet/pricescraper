@@ -13,7 +13,7 @@ if config.local:
     SQLALCHEMY_DATABASE_URL = 'postgresql://kd:7NdBbDivarbjDRR3eVBOExpIP8y63uev@dpg-ckekncma3ovc73dd62pg-a.frankfurt' \
                           '-postgres.render.com/prices_kvue'
 else:
-    SQLALCHEMY_DATABASE_URL = 'postgres://kd:7NdBbDivarbjDRR3eVBOExpIP8y63uev@dpg-ckekncma3ovc73dd62pg-a/prices_kvue'
+    SQLALCHEMY_DATABASE_URL = 'postgresql://kd:7NdBbDivarbjDRR3eVBOExpIP8y63uev@dpg-ckekncma3ovc73dd62pg-a/prices_kvue'
 
 # engine = create_engine(SQLALCHEMY_DATABASE_URL_LOCAL, connect_args={'check_same_thread': False})  # this is for
 # sqlite only
