@@ -1,6 +1,6 @@
 # General
 from datetime import datetime
-from typing import Annotated, List
+from typing import Annotated, List, Type
 
 # App
 from fastapi import APIRouter, Depends, Path, HTTPException
@@ -77,8 +77,9 @@ async def post_something(db: db_dependency,
 
 
 # Convert ARRAY(Float) to string
-def convert_properties_to_str(obj: RDN):
-    return {'f1_price': str(obj.f1_price),
+def convert_properties_to_str(obj: Type[RDN]):
+    return {'date': str(obj.date_scraped),
+            'f1_price': str(obj.f1_price),
             'f1_volume': str(obj.f1_volume),
             'f2_price': str(obj.f2_price),
             'f2_volume': str(obj.f2_volume),
