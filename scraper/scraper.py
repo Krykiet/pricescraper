@@ -1,7 +1,8 @@
+import re
+
+import numpy as np
 import requests
 from bs4 import BeautifulSoup
-import numpy as np
-import re
 
 SCRAPER_MESSAGE = 'Scraped!'
 

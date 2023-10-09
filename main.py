@@ -2,11 +2,8 @@ from fastapi import FastAPI
 
 # Models
 import models
-from models import Prices, RDN
-
 # Database
 from database import engine
-
 # Routers
 from routers import scraper_router
 

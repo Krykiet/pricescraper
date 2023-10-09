@@ -1,15 +1,7 @@
-from database import Base
-from sqlalchemy import Column, Integer, String, Float, Date, DateTime, func
+from sqlalchemy import Column, Integer, String, Float, DateTime, func
 from sqlalchemy.dialects.postgresql import ARRAY
 
-
-class Prices(Base):
-    __tablename__ = 'prices'
-
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    date_scraped = Column(DateTime, default=func.now())
-    list1_content = Column(String)
-    list2_content = Column(String)
+from database import Base
 
 
 class RDN(Base):
