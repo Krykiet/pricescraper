@@ -61,6 +61,11 @@ async def get_all_rdn(db: db_dependency):
     return [convert_properties_to_str(obj) for obj in rdn_data]
 
 
+@router.get("/wakeup", status_code=status.HTTP_200_OK)
+async def get_all_rdn(db: db_dependency):
+    return 'wakeup'
+
+
 @router.post("/rdn", status_code=status.HTTP_201_CREATED)
 async def create_rdn(db: db_dependency):
     rdn_data_model = RDN()
