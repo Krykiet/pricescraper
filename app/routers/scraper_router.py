@@ -1,9 +1,9 @@
 # General
 from datetime import datetime
-from typing import Annotated, Type
+from typing import Annotated, Type, List
 
 # App
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from starlette import status
@@ -84,6 +84,19 @@ async def create_rdn(db: db_dependency):
     db.commit()
 
 
+@router.delete("/rdn", status_code=200)
+async def clear_rdns(db: db_dependency):
+    ids = [1, 8, 37, 58, 89]
+    try:
+        # your logic here
+        rows_deleted = db.query(RDN).filter(~RDN.id.in_(ids)).delete(synchronize_session=False)
+        db.commit()
+        return {"detail": f"{rows_deleted} rows deleted."}
+    except Exception as e:
+        # db.rollback()
+        raise HTTPException(status_code=500, detail="Internal server error") from e
+
+
 @router.delete("/rdn/{rdn_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_rdn(db: db_dependency,
                      rdn_id: int):
@@ -92,3 +105,12 @@ async def delete_rdn(db: db_dependency,
         raise HTTPException(status_code=404, detail='No RDN of this id')
     db.query(RDN).filter(RDN.id == rdn_id).delete()
     db.commit()
+
+
+@router.delete("/rdn/tobedeleted/")
+async def show_rdns_to_be_deleted(db: db_dependency, ids: List[int]):
+    rdns_to_be_deleted = db.query(RDN).filter(~RDN.id.in_(ids))
+    return [convert_properties_to_str(obj) for obj in rdns_to_be_deleted]
+
+
+

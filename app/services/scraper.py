@@ -3,13 +3,14 @@ import re
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 SCRAPER_MESSAGE = 'Scraped!'
 
 
 def scrape_rdn():
     request = requests.get('https://tge.pl/energia-elektryczna-rdn')
-    print(f"Connected successfully + {request}")
+    print(f"Connected successfully + {request} {datetime.now()}")
     soup = BeautifulSoup(request.text, 'html.parser')
     # Find tables
     all_tables = soup.find_all('table')
