@@ -9,7 +9,13 @@ SCRAPER_MESSAGE = 'Scraped!'
 
 
 def scrape_rdn():
-    request = requests.get('https://tge.pl/energia-elektryczna-rdn')
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        # existing headers...
+    }
+    request = requests.get('https://tge.pl/energia-elektryczna-rdn', headers=headers)
     print(f"Connected successfully + {request} {datetime.now()}")
     soup = BeautifulSoup(request.text, 'html.parser')
     # Find tables
