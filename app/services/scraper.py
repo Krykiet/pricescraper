@@ -4,6 +4,7 @@ import numpy as np
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+import random
 
 SCRAPER_MESSAGE = 'Scraped!'
 
@@ -14,7 +15,8 @@ def scrape_rdn():
         'Pragma': 'no-cache',
         # existing headers...
     }
-    request = requests.get('https://tge.pl/energia-elektryczna-rdn', headers=headers)
+    url = f'https://tge.pl/energia-elektryczna-rdn?random={random.randint(10000, 99999)}'
+    request = requests.get(url=url, headers=headers)
     print(f"Connected successfully + {request} {datetime.now()}")
     soup = BeautifulSoup(request.text, 'html.parser')
     # Find tables
