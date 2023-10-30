@@ -15,7 +15,7 @@ def scrape_rdn():
         'Pragma': 'no-cache',
         # existing headers...
     }
-    url = f'https://tge.pl/energia-elektryczna-rdn?random={random.randint(10000, 99999)}'
+    url = f'https://tge.pl/energia-elektryczna-rdn?random={random.randint(10001, 99999)}'
     request = requests.get(url=url, headers=headers)
     print(f"Connected successfully + {request} {datetime.now()}")
     soup = BeautifulSoup(request.text, 'html.parser')
