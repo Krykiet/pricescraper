@@ -86,7 +86,7 @@ async def create_rdn(db: db_dependency):
 
 @router.delete("/rdn", status_code=200)
 async def clear_rdns(db: db_dependency):
-    ids = [1, 8, 37, 58, 89]
+    ids = [1, 8, 37, 58, 89, 651, 242, 160, 117, 662]
     try:
         # your logic here
         rows_deleted = db.query(RDN).filter(~RDN.id.in_(ids)).delete(synchronize_session=False)

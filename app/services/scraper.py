@@ -8,6 +8,7 @@ import random
 
 SCRAPER_MESSAGE = 'Scraped!'
 
+# TODO Seek for changes with every get request and scrape only when price changes
 
 def scrape_rdn():
     headers = {
