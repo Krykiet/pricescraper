@@ -17,7 +17,7 @@ from app.services import scraper
 
 router = APIRouter(prefix='/scraper', tags=['scraper'])
 
-scraped_data = scraper.ScrapedData()
+
 
 
 # Get instance of db for dependency injection
@@ -68,6 +68,9 @@ async def get_all_rdn(db: db_dependency):
 
 @router.post("/rdn", status_code=status.HTTP_201_CREATED)
 async def create_rdn(db: db_dependency):
+
+    scraped_data = scraper.ScrapedData()
+
     rdn_data_model = RDN()
     print('Post request')
 
