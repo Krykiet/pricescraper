@@ -6,18 +6,20 @@ from typing import Annotated, Type, List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+
 from starlette import status
 
 # db
 from app.database import SessionLocal
 # models
-from app.models.models import RDN
+from app.models.models import RDN, TgeRdnData, TgeRdnDataModel
 # services
 from app.services import scraper
 
+from app.routers.utils import convert_properties_to_str
+
 router = APIRouter(prefix='/scraper', tags=['scraper'])
-
-
 
 
 # Get instance of db for dependency injection
@@ -31,7 +33,6 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]  # Database dependency injection
 
-
 class RDNRequest(BaseModel):
     date_scraped: datetime
     f1_price: list
@@ -41,34 +42,21 @@ class RDNRequest(BaseModel):
     cont_price: list
     cont_volume: list
 
-
-# Convert ARRAY(Float) to string
-def convert_properties_to_str(obj: Type[RDN]):
-    return {'id': obj.id,
-            'date': str(obj.date_scraped),
-            'f1_price': str(obj.f1_price),
-            'f1_volume': str(obj.f1_volume),
-            'f2_price': str(obj.f2_price),
-            'f2_volume': str(obj.f2_volume),
-            'cont_price': str(obj.cont_price),
-            'cont_volume': str(obj.cont_volume)}
+# Utility
+@router.get("/wakeup", status_code=status.HTTP_200_OK)
+async def get_all_rdn(db: db_dependency):
+    return 'wakeup'
 
 
-# RDN
+# Deprecated // save data as lists
 @router.get("/rdn", status_code=status.HTTP_200_OK)
 async def get_all_rdn(db: db_dependency):
     rdn_data = db.query(RDN).all()
     return [convert_properties_to_str(obj) for obj in rdn_data]
 
 
-@router.get("/wakeup", status_code=status.HTTP_200_OK)
-async def get_all_rdn(db: db_dependency):
-    return 'wakeup'
-
-
 @router.post("/rdn", status_code=status.HTTP_201_CREATED)
 async def create_rdn(db: db_dependency):
-
     scraped_data = scraper.ScrapedData()
 
     rdn_data_model = RDN()
@@ -114,6 +102,3 @@ async def delete_rdn(db: db_dependency,
 async def show_rdns_to_be_deleted(db: db_dependency, ids: List[int]):
     rdns_to_be_deleted = db.query(RDN).filter(~RDN.id.in_(ids))
     return [convert_properties_to_str(obj) for obj in rdns_to_be_deleted]
-
-
-
