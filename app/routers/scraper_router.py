@@ -33,6 +33,7 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]  # Database dependency injection
 
+
 class RDNRequest(BaseModel):
     date_scraped: datetime
     f1_price: list
@@ -41,6 +42,7 @@ class RDNRequest(BaseModel):
     f2_volume: list
     cont_price: list
     cont_volume: list
+
 
 # Utility
 @router.get("/wakeup", status_code=status.HTTP_200_OK)
