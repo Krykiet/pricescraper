@@ -20,7 +20,7 @@ elif config.prod:
 
 # engine = create_engine(SQLALCHEMY_DATABASE_URL_LOCAL, connect_args={'check_same_thread': False})  # this is for
 # sqlite only
-engine = create_engine(NEW_SQLALCHEMY_DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
