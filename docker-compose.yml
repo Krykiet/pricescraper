@@ -1,0 +1,31 @@
+services:
+  scraper:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: tge-scraper
+    ports:
+      - "8002:8000"
+    environment:
+      - DB_URL=${DB_URL}
+    networks:
+      - tge-scraper-network
+    command: --remote
+
+  postgres:
+    image: postgres:13
+    container_name: tge-scraper-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - tge-scraper-network
+
+networks:
+  tge-scraper-network:
+
+volumes:
+  postgres_data:

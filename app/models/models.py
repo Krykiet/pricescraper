@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy import Column, Integer, Float, DateTime, func
 from sqlalchemy.dialects.postgresql import ARRAY
 
@@ -24,7 +26,7 @@ class RDN(Base):
 class TgeRdnData(Base):
     __tablename__ = 'tge_rdn_data'
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    date_scraped = Column(DateTime, default=datetime.now())
+    date_scraped = Column(DateTime, default=func.now())
     hour = Column(Integer)
     f1_price = Column(Float)
     f1_volume = Column(Float)
@@ -42,9 +44,8 @@ class TgeRdnDataModel(BaseModel):
     f1_volume: float
     f2_price: float
     f2_volume: float
-    cont_price: float
-    cont_volume: float
+    cont_price: Optional[float] = None  # Make these fields optional to handle nulls
+    cont_volume: Optional[float] = None
 
-    # Include other fields from your TgeRdnData SQLAlchemy model
     class Config:
         orm_mode = True

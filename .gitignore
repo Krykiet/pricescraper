@@ -1,0 +1,5 @@
+# DB volume
+postgres_data/
+
+cronjob-debug.sh
+

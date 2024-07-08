@@ -2,15 +2,32 @@ import uvicorn
 
 from app.config import get_config
 
+import logging
+import os
+import sys
+
+config = get_config()
+
+if os.getenv('LOGGING_LEVEL') == 'debug':
+    level = logging.DEBUG
+else:
+    level = logging.INFO
+
+logger = logging.getLogger(__name__)
+
+logging.basicConfig(level=level,
+                    format='%(levelname)s:     %(asctime)s     %(name)s     %(message)s',
+                    stream=sys.stdout)
+
 if __name__ == "__main__":
-    config = get_config()
+
     if config.local:
-        print('@@Config local@@')
-        uvicorn.run("app.main:app", reload=config.local)
+        logger.info("@@ Config: local @@")
+        uvicorn.run("app.main:app", host='0.0.0.0', port=8000, reload=config.local)
     elif config.prod:
-        print('@@Config prod@@')
+        logger.info("@@ Config: prod @@")
         uvicorn.run("app.main:app", port=10000, host='0.0.0.0', reload=config.prod)
-    elif config.prod2:
-        print('@@Config prod@@')
-        uvicorn.run("app.main:app", port=10000, host='0.0.0.0', reload=config.prod2)
+    elif config.remote:
+        logger.info("@@ Config: remote @@")
+        uvicorn.run("app.main:app", host='0.0.0.0', port=8000)
 

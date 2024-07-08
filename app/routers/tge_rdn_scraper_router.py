@@ -1,5 +1,5 @@
 # General
-from datetime import datetime
+from datetime import datetime, date
 from typing import Annotated, Type, List
 
 # App
@@ -7,6 +7,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+
+from sqlalchemy import func
 
 from starlette import status
 
@@ -43,7 +45,7 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]  # Database dependency injection
 
 
-@router.get("/tge-rdn", response_model=List[TgeRdnDataModel])
+@router.get("/all", response_model=List[TgeRdnDataModel])
 async def get_all_tge_rdn(db: db_dependency):
     try:
         records = db.query(TgeRdnData).all()
@@ -53,14 +55,10 @@ async def get_all_tge_rdn(db: db_dependency):
         raise HTTPException(status_code=500, detail="Internal Server Error: Unable to retrieve data.")
 
 
-@router.get("/tge-rdn/last", response_model=TgeRdnDataModel)
+@router.get("/last", response_model=TgeRdnDataModel)
 async def get_last_24_scraped_tge_rdn(db: db_dependency):
     try:
-        # Order by date_scraped descending to get the most recent records first
-        # and limit the results to the last 24 records
         records = db.query(TgeRdnData).order_by(TgeRdnData.date_scraped.desc()).limit(24).all()
-
-        # Reverse the records to have them in ascending order by date_scraped
         records = list(reversed(records))
 
         if records:
@@ -71,6 +69,14 @@ async def get_last_24_scraped_tge_rdn(db: db_dependency):
         print(f"Database error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error: Unable to retrieve data.")
 
+@router.get("/by-date", response_model=List[TgeRdnDataModel])
+async def get_by_date(db: db_dependency, date: date):
+    try:
+
+        records = db.query(TgeRdnData).filter(func.date(TgeRdnData.date_scraped) == date).all()
+        return NaNToNoneJSONResponse(content=records)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/tge-rdn", status_code=status.HTTP_201_CREATED)
 async def create_tge_rdn(db: db_dependency):
@@ -105,3 +111,7 @@ async def create_tge_rdn(db: db_dependency):
         raise HTTPException(status_code=500, detail="Internal Server Error: Unexpected error occurred.")
 
     return {"message": "Data successfully saved"}
+
+@router.get("/check")
+async def debug():
+    return {'works': 'ok'}
