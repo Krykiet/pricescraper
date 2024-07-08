@@ -27,7 +27,7 @@ class TgeRdnData(Base):
     __tablename__ = 'tge_rdn_data'
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     date_scraped = Column(DateTime, default=func.now())
-    hour = Column(Integer)
+    hour = Column(DateTime)
     f1_price = Column(Float)
     f1_volume = Column(Float)
     f2_price = Column(Float)
@@ -39,7 +39,7 @@ class TgeRdnData(Base):
 class TgeRdnDataModel(BaseModel):
     id: int
     date_scraped: datetime
-    hour: int
+    hour: datetime
     f1_price: float
     f1_volume: float
     f2_price: float

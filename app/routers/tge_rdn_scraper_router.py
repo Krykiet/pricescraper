@@ -1,5 +1,5 @@
 # General
-from datetime import datetime, date
+from datetime import datetime, timedelta, date
 from typing import Annotated, List
 
 # App
@@ -73,7 +73,6 @@ async def get_last_24_scraped_tge_rdn(db: db_dependency):
 @router.get("/by-date", response_model=List[TgeRdnDataModel])
 async def get_by_date(db: db_dependency, date: date):
     try:
-
         records = db.query(TgeRdnData).filter(func.date(TgeRdnData.date_scraped) == date).all()
         return NaNToNoneJSONResponse(content=records)
     except Exception as e:
@@ -83,13 +82,19 @@ async def get_by_date(db: db_dependency, date: date):
 async def create_tge_rdn(db: db_dependency):
     try:
         scraped_data = scraper.ScrapedData()
+        current_time = datetime.now()
 
         for hour in range(24):
             rdn_data_model = TgeRdnData()
             logger.info(f"Processing hour: {hour}")
 
-            rdn_data_model.date_scraped = datetime.now()
-            rdn_data_model.hour = hour
+            # Adjust the date_scraped to current time
+            rdn_data_model.date_scraped = current_time
+
+            # Calculate the hour timestamp
+            hour_timestamp = current_time.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1, hours=hour)
+
+            rdn_data_model.hour = hour_timestamp
             rdn_data_model.f1_price = scraped_data.f1_price[hour] if hour < len(scraped_data.f1_price) else None
             rdn_data_model.f1_volume = scraped_data.f1_volume[hour] if hour < len(scraped_data.f1_volume) else None
             rdn_data_model.f2_price = scraped_data.f2_price[hour] if hour < len(scraped_data.f2_price) else None
