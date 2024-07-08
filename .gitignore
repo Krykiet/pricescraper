@@ -1,5 +1,2 @@
-# DB volume
-postgres_data/
-
-cronjob-debug.sh
-
+# Ignore the .env file
+.env

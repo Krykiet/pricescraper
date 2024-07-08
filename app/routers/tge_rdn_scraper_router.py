@@ -1,30 +1,31 @@
 # General
 from datetime import datetime, date
-from typing import Annotated, Type, List
+from typing import Annotated, List
 
 # App
-from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-
 from sqlalchemy import func
-
 from starlette import status
 
-# db
 from app.database import SessionLocal
-# models
-from app.models.models import RDN, TgeRdnData, TgeRdnDataModel
-# services
+from app.models.models import TgeRdnData, TgeRdnDataModel
 from app.services import scraper
-
-router = APIRouter(prefix='/tge-rdn', tags=['tge-rdn-scraper'])
 
 # JSON
 from fastapi.responses import JSONResponse
 import json
 from fastapi.encoders import jsonable_encoder
+
+import logging
+
+router = APIRouter(prefix='/tge-rdn', tags=['tge-rdn-scraper'])
+
+# Configure logging
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 
 class NaNToNoneJSONResponse(JSONResponse):
@@ -51,7 +52,7 @@ async def get_all_tge_rdn(db: db_dependency):
         records = db.query(TgeRdnData).all()
         return NaNToNoneJSONResponse(content=records)
     except SQLAlchemyError as e:
-        print(f"Database error: {e}")
+        logger.error(f"Database error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error: Unable to retrieve data.")
 
 
@@ -66,7 +67,7 @@ async def get_last_24_scraped_tge_rdn(db: db_dependency):
         else:
             raise HTTPException(status_code=404, detail="No records found.")
     except SQLAlchemyError as e:
-        print(f"Database error: {e}")
+        logger.error(f"Database error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error: Unable to retrieve data.")
 
 @router.get("/by-date", response_model=List[TgeRdnDataModel])
@@ -85,7 +86,7 @@ async def create_tge_rdn(db: db_dependency):
 
         for hour in range(24):
             rdn_data_model = TgeRdnData()
-            print(f'Processing hour: {hour}')
+            logger.info(f"Processing hour: {hour}")
 
             rdn_data_model.date_scraped = datetime.now()
             rdn_data_model.hour = hour
@@ -100,18 +101,19 @@ async def create_tge_rdn(db: db_dependency):
             db.add(rdn_data_model)
 
         db.commit()
-        print('Data for all hours committed successfully')
+        logger.info(f"Data for all hours commited successfully")
     except SQLAlchemyError as e:
         # Rollback in case of error
         db.rollback()
-        print(f"Database error: {e}")
+        logger.error(f"SQLAlchemy error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error: Unable to save data to database.")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        logger.error(f"Unknown database error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error: Unexpected error occurred.")
 
     return {"message": "Data successfully saved"}
 
 @router.get("/check")
 async def debug():
+    logger.info(f"Check works")
     return {'works': 'ok'}
