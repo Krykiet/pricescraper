@@ -2,13 +2,19 @@ from fastapi import FastAPI
 
 # Database
 from app.database import engine
+
 # Models
 from app.models import models
 from app.models.models import TgeRdnData
+
 # Routers
 from app.routers import tge_rdn_scraper_router
 
-app = FastAPI()
+import os
+
+API_ROOT_PATH = os.getenv("API_ROOT_PATH", "")
+
+app = FastAPI(root_path=API_ROOT_PATH)
 
 # Prices.__table__.drop(engine)
 # TgeRdnData.__table__.drop(engine)
