@@ -1,6 +1,6 @@
 from typing import Type
 
-from app.models.models import RDN
+from app.models.tge_rdn import RDN
 
 
 def convert_properties_to_str(obj: Type[RDN]):

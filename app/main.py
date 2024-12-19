@@ -4,10 +4,10 @@ from fastapi import FastAPI
 from app.database import engine
 
 # Models
-from app.models import models
+from app.database import Base
 
 # Routers
-from app.routers import tge_rdn_scraper_router
+from app.routers import tge_rdn_scraper_router, wahp_scraper_router
 from app.scheduler import start_scheduler
 
 import os
@@ -20,6 +20,7 @@ app = FastAPI(root_path=API_ROOT_PATH)
 async def on_startup():
     start_scheduler()
 
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app.include_router(tge_rdn_scraper_router.router)
+app.include_router(wahp_scraper_router.router)

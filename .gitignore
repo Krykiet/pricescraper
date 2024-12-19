@@ -3,3 +3,9 @@
 
 .idea/
 .idea/*
+
+debug.py
+
+*_tge_rdn_data*.csv
+*tge_rdn_data*.csv
+

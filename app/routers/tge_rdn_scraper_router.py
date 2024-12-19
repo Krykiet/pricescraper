@@ -1,16 +1,15 @@
 # General
 from datetime import datetime, timedelta, date
-from typing import Annotated, List
+from typing import List
 
 # App
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
 from starlette import status
 
-from app.database import SessionLocal
-from app.models.models import TgeRdnData, TgeRdnDataModel
+from app.models.tge_rdn import TgeRdnDataModel
+from app.schemas.tge_rdn import TgeRdnDataSchema
 from app.services import scraper
 
 # JSON
@@ -33,33 +32,22 @@ class NaNToNoneJSONResponse(JSONResponse):
         return json.dumps(jsonable_encoder(content, custom_encoder={float: lambda x: None if x != x else x}),
                           ensure_ascii=False, allow_nan=False).encode('utf-8')
 
+from app.database import db_dependency
 
-# Get instance of db for dependency injection
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-db_dependency = Annotated[Session, Depends(get_db)]  # Database dependency injection
-
-
-@router.get("/all", response_model=List[TgeRdnDataModel])
+@router.get("/all", response_model=List[TgeRdnDataSchema])
 async def get_all_tge_rdn(db: db_dependency):
     try:
-        records = db.query(TgeRdnData).all()
+        records = db.query(TgeRdnDataModel).all()
         return NaNToNoneJSONResponse(content=records)
     except SQLAlchemyError as e:
         logger.error(f"Database error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error: Unable to retrieve data.")
 
 
-@router.get("/last", response_model=TgeRdnDataModel)
+@router.get("/last", response_model=TgeRdnDataSchema)
 async def get_last_24_scraped_tge_rdn(db: db_dependency):
     try:
-        records = db.query(TgeRdnData).order_by(TgeRdnData.date_scraped.desc()).limit(24).all()
+        records = db.query(TgeRdnDataModel).order_by(TgeRdnDataModel.date_scraped.desc()).limit(24).all()
         records = list(reversed(records))
 
         if records:
@@ -70,10 +58,10 @@ async def get_last_24_scraped_tge_rdn(db: db_dependency):
         logger.error(f"Database error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error: Unable to retrieve data.")
 
-@router.get("/by-date", response_model=List[TgeRdnDataModel])
+@router.get("/by-date", response_model=List[TgeRdnDataSchema])
 async def get_by_date(db: db_dependency, date: date):
     try:
-        records = db.query(TgeRdnData).filter(func.date(TgeRdnData.date_scraped) == date).all()
+        records = db.query(TgeRdnDataModel).filter(func.date(TgeRdnDataModel.date_scraped) == date).all()
         return NaNToNoneJSONResponse(content=records)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -85,7 +73,7 @@ async def create_tge_rdn(db: db_dependency):
         current_time = datetime.now()
 
         for hour in range(24):
-            rdn_data_model = TgeRdnData()
+            rdn_data_model = TgeRdnDataModel()
             logger.info(f"Processing hour: {hour}")
 
             # Adjust the date_scraped to current time

@@ -23,5 +23,3 @@ COPY . .
 EXPOSE 8000
 
 ENTRYPOINT ["python", "./run.py"]
-
-CMD ["--remote"]
