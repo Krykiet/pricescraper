@@ -11,7 +11,9 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
     networks:
       - tge-scraper-network
-    command: --remote
+    # TO DELETE
+    volumes:
+      - .:/usr/src/tge-scraper
 
   postgres:
     image: postgres:13

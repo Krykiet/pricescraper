@@ -7,7 +7,7 @@ from app.database import engine
 from app.database import Base
 
 # Routers
-from app.routers import tge_rdn_scraper_router, wahp_scraper_router
+from app.routers import tge_rdn_scraper_router, wahp_scraper_router, tge_indices_router, tge_block_contract_router
 from app.scheduler import start_scheduler
 
 import os
@@ -24,3 +24,7 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(tge_rdn_scraper_router.router)
 app.include_router(wahp_scraper_router.router)
+
+app.include_router(tge_indices_router.router)
+
+app.include_router(tge_block_contract_router.router)

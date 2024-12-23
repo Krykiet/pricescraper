@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     cron \
     nano \
     curl \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && echo "export PATH=\"$HOME/.local/bin:$PATH\"" >> $HOME/.bashrc
